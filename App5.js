@@ -1,15 +1,23 @@
-var App = {
+var App5 = {
 	init			: function(config){
-		
+		App5.debug.log("** App5 initialisation **");
+		App5.HTML.append("body","<div id='App5-Page-Loader'>&nbsp;</div>");
+		App5.event.add(document,"DOMContentLoaded",function(){
+			App5.debug.log("* Page loaded *");
+			App5.HTML.css("#App5-Page-Loader","display","none");
+			App5.debug.display();
+		});
 	},
 	debug 			: {
 		message		: [],
 		log			: function(msg){
 			var e = new Date();
-			App.debug.message.push(e.toGMTString()+" : "+msg);
+			App5.debug.message.push(e.toGMTString()+" : "+msg);
 		},
 		display		: function(){
-			console.log(App.debug.message);	
+			for(i in App5.debug.message){
+				console.table(App5.debug.message[i]);
+			}
 		}
 	},
 	test			: {
@@ -17,20 +25,57 @@ var App = {
 		isOnline	: true,
 		isMobile 	: function(){
 			return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-		}	
+		},
+		isFullscreen: false,	
+	},
+	event			: {
+		add			:  function(el,ev,cb){
+			App5.debug.log("Event '"+ev+"' attached");
+			if(el.addEventListener) {
+				el.addEventListener(ev, cb, false)
+			} else if(el.attachEvent) {
+				el.attachEvent('on'+ev, cb)
+			}
+		},
+		remove		: function(name){
+			
+		}
+	},
+	history			: {
+		add			: function(title,uri){
+			window.history.pushState({"title":title,"uri":uri},title, uri);			
+		},
+		replace		: function(title,uri){
+			window.history.pushState({"title":title,"uri":uri},title, uri);			
+		},
+		current		: function(){
+			return history.state;
+		},
+		next		: function(){
+			window.history.forward();			
+		},
+		prev		: function(){
+			window.history.back();			
+		},
+		goto		: function(index){
+			window.history.go(index);
+		},
+		size		: function(index){
+			return window.history.length;
+		},
 	},
 	cache			: {
 		init		: function(){
-			App.debug.log("App cache init");
-			window.addEventListener("offline", function(e) {
-				App.debug.log("App is offline");
-				App.test.isOffline 	= true;
-				App.test.isOnline	= false;
+			App5.debug.log("App cache init");
+			App5.event.add(window,"offline", function(e) {
+				App5.debug.log("App is offline");
+				App5.test.isOffline 	= true;
+				App5.test.isOnline	= false;
 			}, false);
-			window.addEventListener("online", function(e) {
-				App.debug.log("App is online");
-				App.test.isOffline 	= true;
-				App.test.isOnline	= false;
+			App5.event.add(window,"online", function(e) {
+				App5.debug.log("App is online");
+				App5.test.isOffline 	= true;
+				App5.test.isOnline	= false;
 			}, false);	
 		}
 	},
@@ -38,44 +83,43 @@ var App = {
 		connexion	: null,
 		version 	: "1.0",
 		open		: function(name,description){
-			App.debug.log("Open DB connexion table '"+name+"'");
- 			App.db.connexion = openDatabase(name, "1", description, 5 * 1024 * 1024);	
+			App5.debug.log("Open DB connexion table '"+name+"'");
+ 			App5.db.connexion = openDatabase(name, "1", description, 5 * 1024 * 1024);	
 		},
 		onError 	: function(tx, e) {
-			App.debug.log("Error connexion - '"+e.message+"'");
-  			alert("There has been an error: " + e.message);
+			App5.debug.log("Error connexion - '"+e.message+"'");
 		},
 		onSuccess 	: function(tx, r) {
-			App.debug.log("Success connexion");
+			App5.debug.log("Success connexion");
 		},
 		query 		: function(sql,success) {
-			App.debug.log("Execute db query '"+sql+"'");
-			App.db.connexion.transaction(function(tx) {
+			App5.debug.log("Execute db query '"+sql+"'");
+			App5.db.connexion.transaction(function(tx) {
 				tx.executeSql(sql, [], success,
-				App.db.onError);
+				App5.db.onError);
 			});
 		}
 	},
 	storage			: {
 		local		: {
 			set			: function(name,value){
-				App.debug.log("Set localStorage var '"+name+"'");
+				App5.debug.log("Set localStorage var '"+name+"'");
 				localStorage[name] = value;
 			},
 			get			: function(name){
-				App.debug.log("Get localStorage var '"+name+"'");
+				App5.debug.log("Get localStorage var '"+name+"'");
 				return localStorage[name];
 			}
 		},
 		cookie		: {
 			set			: function(name,value){
-				App.debug.log("Set cookie '"+name+"'");
+				App5.debug.log("Set cookie '"+name+"'");
 				date.setTime(date.getTime()+(days*24*60*60*1000));
 				var expires = "; expires="+date.toGMTString();
 				document.cookie = name+"="+value+expires+"; path=/";
 			},
 			get			: function(name){
-				App.debug.log("Get cookie '"+name+"'");
+				App5.debug.log("Get cookie '"+name+"'");
 				if (document.cookie.length > 0) {
 					var c_start = document.cookie.indexOf(c_name + "=");
 					if (c_start != -1) {
@@ -90,7 +134,7 @@ var App = {
 				return "";
 			},
 			delete		: function(name){
-				App.debug.log("Delete cookie '"+name+"'");
+				App5.debug.log("Delete cookie '"+name+"'");
 				document.cookie = name+"=;-1; path=/";
 			}
 		}
@@ -102,13 +146,6 @@ var App = {
 		},
 		ucfirst : function(s){
 			return s.replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function($1){ return $1.toUpperCase(); })	
-		},
-		event 	: function(el,ev,cb){
-			if(el.addEventListener) { // DOM standard
-				el.addEventListener(ev, cb, false)
-			} else if(el.attachEvent) { // IE
-				el.attachEvent('on'+ev, cb)
-			}
 		},
 		orientation : function(){
 			var o = null;
@@ -132,7 +169,7 @@ var App = {
 			return this	
 		},
 		vibrate : function(params){
-			if(App.mobile.test("vibrate")){
+			if(App5.mobile.test("vibrate")){
 				var vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate ||  window.navigator.msVibrate;	
 				if(params){
 					vibrate.vibrate(params);	
@@ -140,30 +177,30 @@ var App = {
 					vibrate.vibrate(1000);	
 				}
 			}else{
-				console.log("Vibrate API does not supported");	
+				App5.debug.log("Vibrate API does not supported");	
 			}
 		},
 		battery : function(){
-			if(App.mobile.test("battery")){
+			if(App5.mobile.test("battery")){
 				var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;	
 				return battery;
 			}else{
-				App.debug.log("Battery API does not supported");	
+				App5.debug.log("Battery API does not supported");	
 			}
 		},
 		telephony : function(){
-			return App.mobile.test("telephony")?window.navigator.telephony:null; 	
+			return App5.mobile.test("telephony")?window.navigator.telephony:null; 	
 		},
 		connection : function(){
-			return App.mobile.test("connection")?window.navigator.connection:null; 	
+			return App5.mobile.test("connection")?window.navigator.connection:null; 	
 		},
 		notification : function(title,msg){
-			if(phone.test("Notification")){
+			if(App5.mobile.test("Notification")){
 				var notification = new Notification(title, {
 					body: msg
 				});
 			}else{
-				App.debug.log("Notification API does not supported");	
+				App5.debug.log("Notification API does not supported");	
 			}
 			return this;
 		}	
@@ -176,31 +213,121 @@ var App = {
   			timeout           : 27000
 		},
 		start	: function(cb){
-			App.debug.log("Start Geo position tracking.");	
-			App.Geo.ID = navigator.geolocation.watchPosition(function(position) {
-				App.debug.log("Geo position updated.");
+			App5.debug.log("Start Geo position tracking.");	
+			App5.Geo.ID = navigator.geolocation.watchPosition(function(position) {
+				App5.debug.log("Geo position updated.");
 				cb(position.coords.latitude, position.coords.longitude);
 			},function(){
-				App.debug.log("Error, no position available.");	
-			},App.Geo.options);
+				App5.debug.log("Error, no position available.");	
+			},App5.Geo.options);
 		},
 		stop	: function(){
-			App.debug.log("Stop Geo position tracking.");	
-			navigator.geolocation.clearWatch(App.Geo.ID);	
+			App5.debug.log("Stop Geo position tracking.");	
+			navigator.geolocation.clearWatch(App5.Geo.ID);	
 		},
 		position: function(cb){
-			App.debug.log("Get current Geo position.");	
+			App5.debug.log("Get current Geo position.");	
 			navigator.geolocation.getCurrentPosition(function(position) {
 			  cb(position.coords.latitude, position.coords.longitude);
 			});	
 		}
 	},
 	media	: {
+		video	:	{
+			play	: function(selector){
+				App5.HTML.one(selector).play();	
+			},
+			pause	: function(selector){
+				App5.HTML.one(selector).pause();	
+			},
+			duration: function(selector){
+				return App5.HTML.one(selector).seekable.end(); 
+			},
+			current	: function(selector){
+				return App5.HTML.one(selector).currentTime; 
+			},
+			played	: function(selector){
+				return App5.HTML.one(selector).played.end(); 
+			},
+			volume	: function(selector,volume){
+				App5.HTML.one(selector).volume = volume;	
+			}
+		},
+		audio	:	{
+			play	: function(selector){
+				App5.HTML.one(selector).play();	
+			},
+			pause	: function(selector){
+				App5.HTML.one(selector).pause();	
+			},
+			duration: function(selector){
+				return App5.HTML.one(selector).seekable.end(); 
+			},
+			current	: function(selector){
+				return App5.HTML.one(selector).currentTime; 
+			},
+			played	: function(selector){
+				return App5.HTML.one(selector).played.end(); 
+			},
+			volume	: function(selector,volume){
+				App5.HTML.one(selector).volume = volume;	
+			}
+		},
 		
 	},
 	HTML	: {
 		select : function(selector){
 			return document.querySelectorAll(selector);
+		},
+		one	 	: function(selector){
+			return document.querySelector(selector);
+		},
+		append 	: function(selector,content){
+			App5.debug.log("Add HTML element to '"+selector+"'");
+			App5.HTML.one(selector).innerHTML += content;
+			return this;
+		},
+		css		: function(selector,prop,value){
+			App5.HTML.one(selector).style[prop] = value;
+			return this;	
+		}
+	},
+	view	: {
+		fullscreen : {
+			open	: function(){
+				if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
+					if (document.documentElement.requestFullscreen) {
+						App5.test.isFullscreen = true;
+						document.documentElement.requestFullscreen();
+					} else if (document.documentElement.msRequestFullscreen) {
+						App5.test.isFullscreen = true;
+						document.documentElement.msRequestFullscreen();
+					} else if (document.documentElement.mozRequestFullScreen) {
+						App5.test.isFullscreen = true;
+						document.documentElement.mozRequestFullScreen();
+					} else if (document.documentElement.webkitRequestFullscreen) {
+						App5.test.isFullscreen = true;
+						document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+					}
+				} 	
+			},
+			close	: function(){
+				if (document.exitFullscreen) {
+					App5.test.isFullscreen = false;
+					document.exitFullscreen();
+				} else if (document.msExitFullscreen) {
+					App5.test.isFullscreen = false;
+					document.msExitFullscreen();
+				} else if (document.mozCancelFullScreen) {
+					App5.test.isFullscreen = false;
+					document.mozCancelFullScreen();
+				} else if (document.webkitExitFullscreen) {
+					App5.test.isFullscreen = false;
+					document.webkitExitFullscreen();
+				}				
+			}
+			
 		}
 	}
 };
+App5.init(null);
