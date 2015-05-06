@@ -29,7 +29,7 @@ var App5 = {
 		isFullscreen: false,	
 	},
 	event			: {
-		add			:  function(el,ev,cb){
+		listen		:  function(el,ev,cb){
 			App5.debug.log("Event '"+ev+"' attached");
 			if(el.addEventListener) {
 				el.addEventListener(ev, cb, false)
@@ -37,9 +37,15 @@ var App5 = {
 				el.attachEvent('on'+ev, cb)
 			}
 		},
-		remove		: function(name){
-			
-		}
+		create		: function(name){
+			var event = new CustomEvent(name,{'Origine':"App5-Event"});
+		},
+        fire        : function(name,el){
+            if(!el){
+                el = document;
+            }
+            el.dispatchEvent(event);
+        }
 	},
 	history			: {
 		add			: function(title,uri){
@@ -82,9 +88,10 @@ var App5 = {
 	db				: {
 		connexion	: null,
 		version 	: "1.0",
-		open		: function(name,description){
-			App5.debug.log("Open DB connexion table '"+name+"'");
- 			App5.db.connexion = openDatabase(name, "1", description, 5 * 1024 * 1024);	
+		open		: function(name,description,size){
+            if(!size){ size = 5; }
+			App5.debug.log("Open DB connexion db '"+name+"'");
+ 			App5.db.connexion = openDatabase(name, "1", description, size * 1024 * 1024);	
 		},
 		onError 	: function(tx, e) {
 			App5.debug.log("Error connexion - '"+e.message+"'");
@@ -102,15 +109,29 @@ var App5 = {
 	},
 	storage			: {
 		local		: {
-			set			: function(name,value){
+			set		: function(name,value){
 				App5.debug.log("Set localStorage var '"+name+"'");
-				localStorage[name] = value;
+				localStorage.setItem(name,value);
 			},
-			get			: function(name){
+			get		: function(name){
 				App5.debug.log("Get localStorage var '"+name+"'");
-				return localStorage[name];
+				return localStorage.getItem(name);
 			}
 		},
+        session     : {
+			set		: function(name,value){
+				App5.debug.log("Set sessionStorage var '"+name+"'");
+				sessionStorage.setItem(name,value);
+			},
+			get		: function(name){
+				App5.debug.log("Get sessionStorage var '"+name+"'");
+				return sessionStorage.getItem(name);
+			},
+            remove	: function(name){
+				App5.debug.log("Remove sessionStorage var '"+name+"'");
+				sessionStorage.removeItem(name);
+			}
+        }
 		cookie		: {
 			set			: function(name,value){
 				App5.debug.log("Set cookie '"+name+"'");
@@ -275,7 +296,7 @@ var App5 = {
 		},
 		
 	},
-	HTML	: {
+	html	: {
 		select : function(selector){
 			return document.querySelectorAll(selector);
 		},
@@ -328,6 +349,24 @@ var App5 = {
 			}
 			
 		}
-	}
+	},
+    utils       : {
+        json    : {
+            encode :function(str){
+                return JSON.stringify(str);   
+            },
+            decode : function(str){
+                return JSON.parse(str);
+            }
+        },
+        base64 : {
+            encode :function(str){
+                return window.btoa(unescape(encodeURIComponent( str )));   
+            },
+            decode : function(str){
+                return decodeURIComponent(escape(window.atob( str )));
+            }
+        }
+    }
 };
 App5.init(null);
