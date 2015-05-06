@@ -1,11 +1,10 @@
 "use strict";
 var App5 = {
-    "init": function (config) {
+    "ready": function (callback) {
         App5.debug.log("** App5 initialisation **");
-        App5.html.append("body", "<div id='App5-Page-Loader'>&nbsp;</div>");
-        App5.event.add(document, "DOMContentLoaded", function () {
+        App5.event.listen(document, "DOMContentLoaded", function () {
             App5.debug.log("* Page loaded *");
-            App5.html.css("#App5-Page-Loader", "display", "none");
+            callback();
             App5.debug.display();
         });
     },
@@ -395,10 +394,18 @@ var App5 = {
             }
         }
     },
+    "file"  : {
+        "choose" :function(){
+            App5.html.append(document,"<input type='file' name='app5-file' id='app5-file' style='display:none' />");
+            App5.event.fire("click",App5.html.select("#app5-file"));
+        }
+    },
     "export": {
         "pdf": {
 
+        },
+        "txt":{
+            
         }
     }
 };
-App5.init(null);
