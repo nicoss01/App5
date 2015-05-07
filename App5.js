@@ -5,7 +5,6 @@ var App5 = {
         App5.event.listen(document, "DOMContentLoaded", function () {
             App5.debug.log("* Page loaded *");
             callback();
-            App5.debug.display();
         });
     },
     "debug": {
@@ -334,11 +333,27 @@ var App5 = {
                 var c = document.createElement("link");
                 c.setAttribute("rel","import");
                 c.setAttribute("href","tmpl/"+name+".html");
+                App5.event.listen(c,"load",function(){
+                    App5.debug.log("Template successfully loaded : '" + name + "'");
+                    var link = document.querySelector('link[rel="import"]');
+                    
+                    var proto2 = Object.create(HTMLElement.prototype);
+
+                    proto2.createdCallback = function() {
+                        // get template in import
+                        var content = link.import;
+                    var templateImported = content.querySelector('template');
+                        var template = templateImported.querySelector('template');
+                        // import template into
+                        var clone = document.importNode(template.content, true);
+                        clone.querySelector('#app5-'+name+'-content').innerText = this.getAttribute('name');
+                        var root = this.createShadowRoot();
+                        root.appendChild(clone);
+                    };
+
+                    document.registerElement('app5-'+name, {prototype: proto2});
+                })
                 document.head.appendChild(c);
-                var l = document.querySelector('link[rel="import"]');
-                var ct = l.import;
-                App5.debug.log("Loaded web component template '" + name + "'");
-                return ct;
             },
             "use":function(name,data){
                 

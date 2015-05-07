@@ -10,13 +10,14 @@
 </head>
 
 <body>
+    <div id="host"></div>
     <h1>Test App5</h1>
     <script>
     App5.ready(function(){
-        App5.event.listen(document,"click",function(){
+        App5.event.listen(document,"click",function(){   
             App5.html.template.import("list");
             for(var i=0;i<10;i++){
-                App5.html.append(document.body,"<App5-List-Item>Element n°"+i+"</App5-List-Item>");
+                App5.html.append(document.body,"<app5-list name='Element n°"+i+"'></app5-list>");
             }
         });
     })
