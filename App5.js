@@ -329,6 +329,21 @@ var App5 = {
         "css": function (selector, prop, value) {
             App5.html.one(selector).style[prop] = value;
             return this;
+        },
+        "template":{
+            "import":function(name){
+                var c = document.createElement("link");
+                c.setAttribute("rel","import");
+                c.setAttribute("src","tmpl/"+name+".html");
+                document.head.appendChild(c);
+                var l = document.querySelector('link[rel="import"]');
+                var ct = l.import;
+                return ct;
+            },
+            "use":function(name,data){
+                
+            }
+            
         }
     },
     "view": {
