@@ -321,9 +321,7 @@ var App5 = {
         },
         "append": function (selector, content) {
             App5.debug.log("Add HTML element to '" + selector + "'");
-            var a = document.createElement("div");
-            a.innerHTML = content;
-            selector.appendChild(a);
+            selector.innerHTML += content;
             return this;
         },
         "css": function (selector, prop, value) {
@@ -332,12 +330,14 @@ var App5 = {
         },
         "template":{
             "import":function(name){
+                App5.debug.log("Load web component template '" + name + "'");
                 var c = document.createElement("link");
                 c.setAttribute("rel","import");
-                c.setAttribute("src","tmpl/"+name+".html");
+                c.setAttribute("href","tmpl/"+name+".html");
                 document.head.appendChild(c);
                 var l = document.querySelector('link[rel="import"]');
                 var ct = l.import;
+                App5.debug.log("Loaded web component template '" + name + "'");
                 return ct;
             },
             "use":function(name,data){

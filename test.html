@@ -14,7 +14,10 @@
     <script>
     App5.ready(function(){
         App5.event.listen(document,"click",function(){
-            App5.file.choose();
+            App5.html.template.import("list");
+            for(var i=0;i<10;i++){
+                App5.html.append(document.body,"<App5-List-Item>Element n°"+i+"</App5-List-Item>");
+            }
         });
     })
     </script>
