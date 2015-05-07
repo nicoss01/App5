@@ -39,15 +39,16 @@ var App5 = {
             }
         },
         "create": function (name) {
-            var event = new CustomEvent(name, {
-                'Origine': "App5-Event"
-            });
+            document.createEvent(name);
         },
         "fire": function (name, el) {
-            if (!el) {
-                el = document;
+            App5.debug.log("Event trigger for '" + name + "'");
+            if (document.createEvent) {
+                el.dispatchEvent(name);
+            } else {
+                el.fireEvent("on" + name, event);
             }
-            el.dispatchEvent(event);
+            //el.dispatchEvent(event);
         }
     },
     "history": {
@@ -320,7 +321,9 @@ var App5 = {
         },
         "append": function (selector, content) {
             App5.debug.log("Add HTML element to '" + selector + "'");
-            App5.html.one(selector).innerHTML += content;
+            var a = document.createElement("div");
+            a.innerHTML = content;
+            selector.appendChild(a);
             return this;
         },
         "css": function (selector, prop, value) {
@@ -396,8 +399,8 @@ var App5 = {
     },
     "file"  : {
         "choose" :function(){
-            App5.html.append(document,"<input type='file' name='app5-file' id='app5-file' style='display:none' />");
-            App5.event.fire("click",App5.html.select("#app5-file"));
+            App5.html.append(document.body,"<input type='file' name='app5-file' id='app5-file' style='position:absolute;top:-100px' />");
+            App5.event.fire("click",App5.html.one("#app5-file"));
         }
     },
     "export": {
