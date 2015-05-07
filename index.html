@@ -15,7 +15,7 @@
 <body>
     <div class="container">
         <div class="col-xs-4">
-            <h2>Test App5</h2>
+            <h2>Test App5 <button id="fs">Fullscreen</button></h2>
             <form>
                 <div class="form-group">
                     <label for="firstname">Firstname : </label>
@@ -49,6 +49,9 @@
             var geo     = App5.html.one("#geo");
             geo.value = lng+" / "+lat;
         })
+        App5.event.listen(App5.html.one("#fs"),"click",function(){
+           App5.view.fullscreen.open(); 
+        });
         App5.event.listen(App5.html.one("input[type=submit]"),"click",function(e){
             var fn      = App5.html.form.value(App5.html.one("#firstname"));
             var ln      = App5.html.form.value(App5.html.one("#lastname"));
