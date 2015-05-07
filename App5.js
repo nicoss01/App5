@@ -5,7 +5,35 @@ var App5 = {
         App5.event.listen(document, "DOMContentLoaded", function () {
             App5.debug.log("* Page loaded *");
             callback();
-            App5.debug.display();
+            //App5.debug.display();
+            var autorefresh = App5.html.select("*[data-refresh]");
+            if(autorefresh.length>0){
+                for(var z=0;z<autorefresh.length;z++){
+                    var bloc = autorefresh[z];
+                    setInterval(function(){
+                        bloc.innerHTML="Refreshing...";
+                        App5.db.query(bloc.getAttribute("data-sql"),function(tx,results){
+                            var c = "<table class='table table-bordered table-striped'><thead>";
+                            var row = results.rows.item(0);
+                            c+="<tr>";
+                            for(var d in row){
+                                c+="<th>"+d+"</th>";
+                            }
+                            c+="</tr></thead><tbody>";
+                            for (var b=0; b<results.rows.length; b++) {
+                                var row = results.rows.item(b);
+                                c+="<tr>";
+                                for(var d in row){
+                                    c+="<td>"+row[d]+"</td>";   
+                                }
+                                c+="</tr>";
+                            }
+                            c+="</tbody><table>";
+                            bloc.innerHTML = c;
+                        });
+                    },bloc.getAttribute("data-refresh"));  
+                }
+            }
         });
     },
     "debug": {
@@ -13,6 +41,7 @@ var App5 = {
         "log": function (msg) {
             var e = new Date();
             App5.debug.message.push(e.toGMTString() + " : " + msg);
+            console.log(e.toGMTString() + " : " + msg);
         },
         "display": function () {
             var i;
@@ -97,26 +126,27 @@ var App5 = {
     },
     "db": {
         "connexion": null,
-        "version": "1.0",
-        "open": function (name, description, size) {
+        "open": function (name, description,version,size) {
             if (!size) {
                 size = 5;
             }
             App5.debug.log("Open DB connexion db '" + name + "'");
-            App5.db.connexion = openDatabase(name, "1", description, size * 1024 * 1024);
+            App5.db.connexion = openDatabase(name, version, description, size * 1024 * 1024);
         },
         "onError": function (tx, e) {
-            App5.debug.log("Error connexion - '" + e.message + "'");
+            App5.debug.log("Error query - '" + e.message + "'");
         },
         "onSuccess": function (tx, r) {
-            App5.debug.log("Success connexion");
+            App5.debug.log("Success query");
         },
         "query": function (sql, success) {
             App5.debug.log("Execute db query '" + sql + "'");
             App5.db.connexion.transaction(function (tx) {
-                tx.executeSql(sql, [], success,
-                    App5.db.onError);
+                tx.executeSql(sql, [], success, App5.db.onError);
             });
+        },
+        "exist": function (name){
+            
         }
     },
     "storage": {
@@ -344,6 +374,23 @@ var App5 = {
                 
             }
             
+        },
+        "form":{
+            "value" : function(selector,value){
+                if(typeof value=="undefined"){
+                    if(selector.nodeName=="select"){
+                        return selector.options[selector.selectedIndex].value;
+                    }else{
+                        return selector.value;
+                    }
+                }else{
+                    if(selector.nodeName=="select"){
+                        return true;
+                    }else{
+                        return selector.value=value;
+                    }
+                }
+            }
         }
     },
     "view": {

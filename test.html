@@ -6,18 +6,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>App5 - Test</title>
     <script src="App5.js"></script>
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <h1>Test App5</h1>
+    <div class="container">
+        <div class="col-xs-4">
+            <h2>Test App5 <button id="fs">Fullscreen</button></h2>
+            <form>
+                <div class="form-group">
+                    <label for="firstname">Firstname : </label>
+                    <input type="text" name="firstname" id="firstname" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Lastname : </label>
+                    <input type="text" name="lastname" id="lastname" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email : </label>
+                    <input type="email" name="email" id="email" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="geo">Geolocation : </label>
+                    <input type="text" name="geo" id="geo" class="form-control" />
+                </div>
+                <input type="submit" class="btn btn-default" value="Save User to DB" />
+            </form>
+        </div>
+        <div class="col-xs-8">
+            <h2>Auto refresh bloc from SQL <button id="print">Print</button></h2>
+            <div id="users" data-sql="select id,firstname,lastname,geo from users" data-refresh="5000"></div>
+        </div>
+    </div>
     <script>
     App5.ready(function(){
-        App5.event.listen(document,"click",function(){
-            App5.html.template.import("list");
-            for(var i=0;i<10;i++){
-                App5.html.append(document.body,"<App5-List-Item>Element n°"+i+"</App5-List-Item>");
-            }
+        App5.db.open("app5-test","Test database","1.0",5);
+        App5.db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);');
+        App5.geo.position(function(lng,lat){
+            var geo     = App5.html.one("#geo");
+            geo.value = lng+" / "+lat;
+        })
+        App5.event.listen(App5.html.one("#fs"),"click",function(){
+           App5.view.fullscreen.open(); 
+        });
+        App5.event.listen(App5.html.one("#print"),"click",function(){
+           App5.view.print(App5.html.one("#users")); 
+        });
+        App5.event.listen(App5.html.one("input[type=submit]"),"click",function(e){
+            var fn      = App5.html.form.value(App5.html.one("#firstname"));
+            var ln      = App5.html.form.value(App5.html.one("#lastname"));
+            var email   = App5.html.form.value(App5.html.one("#email"));            
+            var geo     = App5.html.form.value(App5.html.one("#geo"));
+            App5.db.query('INSERT INTO users(lastname,firstname,email,geo) VALUES ("'+ln+'","'+fn+'","'+email+'","'+geo+'")');
+            e.preventDefault();
+            return false;
         });
     })
     </script>
