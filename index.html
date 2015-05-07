@@ -37,7 +37,7 @@
             </form>
         </div>
         <div class="col-xs-8">
-            <h2>Auto refresh bloc from SQL</h2>
+            <h2>Auto refresh bloc from SQL <button id="print">Print</button></h2>
             <div id="users" data-sql="select id,firstname,lastname,geo from users" data-refresh="5000"></div>
         </div>
     </div>
@@ -51,6 +51,9 @@
         })
         App5.event.listen(App5.html.one("#fs"),"click",function(){
            App5.view.fullscreen.open(); 
+        });
+        App5.event.listen(App5.html.one("#print"),"click",function(){
+           App5.view.print(App5.html.one("#users")); 
         });
         App5.event.listen(App5.html.one("input[type=submit]"),"click",function(e){
             var fn      = App5.html.form.value(App5.html.one("#firstname"));
