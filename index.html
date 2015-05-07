@@ -38,7 +38,7 @@
         </div>
         <div class="col-xs-8">
             <h2>Auto refresh bloc from SQL</h2>
-            <div id="users" data-sql="select id,firstname,lastname,geo from users" data-refresh="5000">Loading...</div>
+            <div id="users" data-sql="select id,firstname,lastname,geo from users" data-refresh="5000"></div>
         </div>
     </div>
     <script>
@@ -54,7 +54,7 @@
             var ln      = App5.html.form.value(App5.html.one("#lastname"));
             var email   = App5.html.form.value(App5.html.one("#email"));            
             var geo     = App5.html.form.value(App5.html.one("#geo"));
-            App5.db.query('INSERT INTO users(lastname,firstname,email) VALUES ("'+ln+'","'+fn+'","'+email+'")');
+            App5.db.query('INSERT INTO users(lastname,firstname,email,geo) VALUES ("'+ln+'","'+fn+'","'+email+'","'+geo+'")');
             e.preventDefault();
             return false;
         });
