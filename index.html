@@ -46,8 +46,8 @@
         App5.db.open("app5-test","Test database","1.0",5);
         App5.db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);');
         App5.geo.position(function(lng,lat){
-            var geo     = App5.html.form.value(App5.html.one("#geo"));
-            App5.html.form.value(geo,lng+" / "+lat);
+            var geo     = App5.html.one("#geo");
+            geo.value = lng+" / "+lat;
         })
         App5.event.listen(App5.html.one("input[type=submit]"),"click",function(e){
             var fn      = App5.html.form.value(App5.html.one("#firstname"));
