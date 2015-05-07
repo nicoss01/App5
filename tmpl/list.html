@@ -1,0 +1,30 @@
+<html>
+    <body>
+        <template id="App5-Template-List">
+            <li id="App5-List-Item"></li>
+        </template>
+        <script>
+            var CurrentDocument = document.currentScript.ownerDocument;
+            var App5ListItem = document.registerElement('App5-List-Item', {
+                prototype: Object.create(HTMLElement.prototype, {
+                    name: {               
+                        value: "",        
+                        writable: true,
+                        enumerable: true,
+                        configurable: true
+                    },
+                    createdCallback: { 
+                        value: function() {
+                            var root = this.createShadowRoot();
+                            var template = CurrentDocument.querySelector('#App5-Template-List');
+                            var clone = document.importNode(template.content, true);
+                            var content = this.innerHTML;
+                            clone.querySelector('#App5-List-Item').innerHTML = this.innerHTML;
+                            root.appendChild(clone);
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
