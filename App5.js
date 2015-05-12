@@ -311,6 +311,29 @@ var App5 = {
         },
 
     },
+    "ajax": function(url,params,callback){
+        App5.debug.log("Add HTML element to '" + selector + "'");    
+        var xhr; 
+        try {  xhr = new ActiveXObject('Msxml2.XMLHTTP');   }
+        catch (e) {
+            try {   xhr = new ActiveXObject('Microsoft.XMLHTTP'); }
+            catch (e2) {
+               try {  xhr = new XMLHttpRequest();  }
+               catch (e3) {  xhr = false;   }
+             }
+        }
+        xhr.onreadystatechange  = function() { 
+           if(xhr.readyState  == 4)
+           {
+            if(xhr.status  == 200) 
+                callback(xhr.responseText,xhr); 
+            else
+                document.ajax.dyn="Error code " + xhr.status;
+            }
+        }; 
+       xhr.open( params.method,url,  true); 
+       xhr.send(params.data);     
+    },
     "html": {
         "select": function (selector) {
             return document.querySelectorAll(selector);
