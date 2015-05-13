@@ -42,25 +42,28 @@
         </div>
     </div>
     <script>
-    A5.ready(function(){
-        A5.db.open("app5-test","Test database","1.0",5);
-        A5.db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);');
-        A5.geo.position(function(lng,lat){
+    A5().ready(function(){
+        A5().debug.log("chargement ok");
+        A5().db.open("app5-test","Test database","1.0",5);
+        A5().db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);');
+        A5().geo.position(function(lng,lat){
             var geo     = A5("#geo");
             geo.value = lng+" / "+lat;
         })
-        A5("#fs").event.listen("click",function(){
-           A5.view.fullscreen.open(); 
+        A5("#fs").event.listen("click",function(e){
+            e.preventDefault();
+            A5().debug.log("Fullsreen ok");
+           A5().view.fullscreen.open(); 
         });
         A5("#print").event.listen("click",function(){
-           A5.view.print(A5("#users")); 
+           A5().view.print(A5("#users")); 
         });
         A5("input[type=submit]").event.listen("click",function(e){
             var fn      = A5("#firstname").html.value();
             var ln      = A5("#lastname").value();
             var email   = A5("#lastname").value();            
             var geo     = A5("#lastname").value();
-            A5.db.query('INSERT INTO users(lastname,firstname,email,geo) VALUES ("'+ln+'","'+fn+'","'+email+'","'+geo+'")');
+            A5().db.query('INSERT INTO users(lastname,firstname,email,geo) VALUES ("'+ln+'","'+fn+'","'+email+'","'+geo+'")');
             e.preventDefault();
             return false;
         });
