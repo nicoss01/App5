@@ -1,15 +1,14 @@
 (function () {
     "use strict";
     var A5 = function (params) {
-        return new A5.fn.init(params);
+        return A5.fn.init(params);
     };
     A5.fn = A5.prototype = {
         "version":"1.0.1",
         "message":[],
         "init"  : function (params) {
-            //console.log(typeof params);
             if(typeof params!="string"){
-                A5().debug.log("Document selected");
+                this.debug.log("Document selected");
                 this[0] = params;
             }else{
                 if(typeof params!="undefined"){
@@ -38,7 +37,7 @@
         },
         "ready": function (callback) {
             A5().debug.log("** App5 initialisation v "+this.version+" **");
-            A5(window).event.listen("load", function () {
+            A5(document).event.listen("DOMContentLoaded", function () {
                 A5.debug.log("* Page loaded *");
                 callback();
             });
@@ -81,7 +80,7 @@
         },
         "event": {
             "listen": function (ev, cb) {
-                A5().debug.log("Event '" + ev + "' attached");
+                A5.debug.log("Event '" + ev + "' attached");
                 if (this[0].addEventListener) {
                     this[0].addEventListener(ev, cb, false);
                 } else if (this.attachEvent) {
