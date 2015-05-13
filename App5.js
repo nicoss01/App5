@@ -13,7 +13,7 @@
     var A5 = function (params) {
         return new App5(params);
     };
-    A5.fn = Library.prototype = {
+    A5.fn = App5.prototype = {
         "ready": function (callback) {
             this.debug.log("** App5 initialisation v "+this.version+"**");
             this.event.listen(document, "DOMContentLoaded", function () {
