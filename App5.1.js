@@ -14,6 +14,13 @@
         return new App5(params);
     };
     A5.fn = Library.prototype = {
+        "ready": function (callback) {
+            this.debug.log("** App5 initialisation v "+this.version+" **");
+            this.event.listen(document, "DOMContentLoaded", function () {
+                this.debug.log("* Page loaded *");
+                callback();
+            });
+        },
         "html": {
             "append": function (content) {
                 this.debug.log("Add HTML element to '" + selector + "'");
@@ -137,6 +144,7 @@
                 }
                 this.debug.log("Open DB connexion db '" + name + "'");
                 this.db.connexion = openDatabase(name, version, description, size * 1024 * 1024);
+                return this;
             },
             "onError": function (tx, e) {
                 this.debug.log("Error query - '" + e.message + "'");
@@ -149,6 +157,38 @@
                 this.db.connexion.transaction(function (tx) {
                     tx.executeSql(sql, [], success, this.db.onError);
                 });
+                return this;
+            },
+            "autorefresh":function(){
+                var autorefresh = A5("*[data-refresh]");
+                if(autorefresh.length>0){
+                    for(var z=0;z<autorefresh.length;z++){
+                        var bloc = autorefresh[z];
+                        setInterval(function(){
+                            bloc.innerHTML="Refreshing...";
+                            App5.db.query(bloc.getAttribute("data-sql"),function(tx,results){
+                                var c = "<table class='table table-bordered table-striped'><thead>";
+                                var row = results.rows.item(0);
+                                c+="<tr>";
+                                for(var d in row){
+                                    c+="<th>"+d+"</th>";
+                                }
+                                c+="</tr></thead><tbody>";
+                                for (var b=0; b<results.rows.length; b++) {
+                                    var row = results.rows.item(b);
+                                    c+="<tr>";
+                                    for(var d in row){
+                                        c+="<td>"+row[d]+"</td>";   
+                                    }
+                                    c+="</tr>";
+                                }
+                                c+="</tbody><table>";
+                                bloc.innerHTML = c;
+                            });
+                        },bloc.getAttribute("data-refresh"));  
+                    }
+                }
+                return this;
             },
             "exist": function (name){
 
