@@ -1,27 +1,52 @@
 (function () {
     "use strict";
-    var App5 = function (params) {
-        var selector = document.querySelectorAll(params);
-        this.length = selector.length;
-        this.version = '1.0.1';
-        this.message = [];
-        for (var a=0; a < this.length; a++) {
-            this[a] = selector[a];
-        }
-        return this;        
+    var A5 = function (params) {
+        return new A5.fn.init(params);
     };
-    var A5 = new App5(params);
-    A5.prototype = {
+    A5.fn = A5.prototype = {
+        "version":"1.0.1",
+        "message":[],
+        "init"  : function (params) {
+            //console.log(typeof params);
+            if(typeof params!="string"){
+                A5().debug.log("Document selected");
+                this[0] = params;
+            }else{
+                if(typeof params!="undefined"){
+                    var selector = document.querySelectorAll(params);
+                    this.length = selector.length;
+                    for (var a=0; a < this.length; a++) {
+                        this[a] = selector[a];
+                    }
+                }
+            }
+            return this;        
+        },
+        "debug" : {
+            "log": function (msg) {
+                var e = new Date();
+                console.log(e.toGMTString() + " : " + msg);
+                return this;
+            },
+            "display": function () {
+                var i;
+                for (i in A5().debug.message) {
+                    console.table(A5().debug.message[i]);
+                }
+                return this;
+            }
+        },
         "ready": function (callback) {
-            this.debug.log("** App5 initialisation v "+this.version+"**");
-            this.event.listen(document, "DOMContentLoaded", function () {
-                this.debug.log("* Page loaded *");
+            A5().debug.log("** App5 initialisation v "+this.version+" **");
+            A5(window).event.listen("load", function () {
+                A5.debug.log("* Page loaded *");
                 callback();
             });
+            return this;
         },
         "html": {
             "append": function (content) {
-                this.debug.log("Add HTML element to '" + selector + "'");
+                A5().debug.log("Add HTML element to '" + selector + "'");
                 this.innerHTML += content;
                 return this;
             },
@@ -43,19 +68,7 @@
                         return this.value = value;
                     }
                 }
-            }
-        },
-        "debug": {
-            "log": function (msg) {
-                var e = new Date();
-                this.message.push(e.toGMTString() + " : " + msg);
-                console.log(e.toGMTString() + " : " + msg);
-            },
-            "display": function () {
-                var i;
-                for (i in this.debug.message) {
-                    console.table(this.debug.message[i]);
-                }
+                return this;
             }
         },
         "test": {
@@ -68,19 +81,20 @@
         },
         "event": {
             "listen": function (ev, cb) {
-                this.debug.log("Event '" + ev + "' attached");
-                if (this.addEventListener) {
-                    this.addEventListener(ev, cb, false);
-                } else if (el.attachEvent) {
-                    this.attachEvent('on' + ev, cb);
+                A5().debug.log("Event '" + ev + "' attached");
+                if (this[0].addEventListener) {
+                    this[0].addEventListener(ev, cb, false);
+                } else if (this.attachEvent) {
+                    this[0].attachEvent('on' + ev, cb);
                 }
                 return this;
             },
             "create": function (name) {
                 document.createEvent(name);
+                return this;
             },
             "fire": function (name) {
-                this.debug.log("Event trigger for '" + name + "'");
+                A5().debug.log("Event trigger for '" + name + "'");
                 if (document.createEvent) {
                     this.dispatchEvent(name);
                 } else {
@@ -96,21 +110,25 @@
                     "title": title,
                     "uri": uri
                 }, title, uri);
+                return this;
             },
             "replace": function (title, uri) {
                 window.history.pushState({
                     "title": title,
                     "uri": uri
                 }, title, uri);
+                return this;
             },
             "current": function () {
                 return history.state;
             },
             "next": function () {
                 window.history.forward();
+                return this;
             },
             "prev": function () {
                 window.history.back();
+                return this;
             },
             "goto": function (index) {
                 window.history.go(index);
@@ -121,14 +139,14 @@
         },
         "cache": {
             "init": function () {
-                this.debug.log("App cache init");
+                A5().debug.log("App cache init");
                 this.event.add(window, "offline", function (e) {
-                    this.debug.log("App is offline");
+                    A5().debug.log("App is offline");
                     this.test.isOffline = true;
                     this.test.isOnline = false;
                 }, false);
                 this.event.add(window, "online", function (e) {
-                    this.debug.log("App is online");
+                    A5().debug.log("App is online");
                     this.test.isOffline = true;
                     this.test.isOnline = false;
                 }, false);
@@ -140,18 +158,18 @@
                 if (!size) {
                     size = 5;
                 }
-                this.debug.log("Open DB connexion db '" + name + "'");
+                A5().debug.log("Open DB connexion db '" + name + "'");
                 this.db.connexion = openDatabase(name, version, description, size * 1024 * 1024);
                 return this;
             },
             "onError": function (tx, e) {
-                this.debug.log("Error query - '" + e.message + "'");
+                A5().debug.log("Error query - '" + e.message + "'");
             },
             "onSuccess": function (tx, r) {
-                this.debug.log("Success query");
+                A5().debug.log("Success query");
             },
             "query": function (sql, success) {
-                this.debug.log("Execute db query '" + sql + "'");
+                A5().debug.log("Execute db query '" + sql + "'");
                 this.db.connexion.transaction(function (tx) {
                     tx.executeSql(sql, [], success, this.db.onError);
                 });
@@ -195,11 +213,11 @@
         "storage": {
             "local": {
                 "set": function (name, value) {
-                    this.debug.log("Set localStorage var '" + name + "'");
+                    A5().debug.log("Set localStorage var '" + name + "'");
                     localStorage.setItem(name, value);
                 },
                 "get": function (name) {
-                    this.debug.log("Get localStorage var '" + name + "'");
+                    A5().debug.log("Get localStorage var '" + name + "'");
                     return localStorage.getItem(name);
                 }
             },
@@ -209,11 +227,11 @@
                     sessionStorage.setItem(name, value);
                 },
                 "get": function (name) {
-                    this.debug.log("Get sessionStorage var '" + name + "'");
+                    A5().debug.log("Get sessionStorage var '" + name + "'");
                     return sessionStorage.getItem(name);
                 },
                 "remove": function (name) {
-                    this.debug.log("Remove sessionStorage var '" + name + "'");
+                    A5().debug.log("Remove sessionStorage var '" + name + "'");
                     sessionStorage.removeItem(name);
                 }
             },
@@ -287,7 +305,7 @@
                         vibrate.vibrate(1000);
                     }
                 } else {
-                    this.debug.log("Vibrate API does not supported");
+                    A5().debug.log("Vibrate API does not supported");
                 }
             },
             "battery": function () {
@@ -295,7 +313,7 @@
                     var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
                     return battery;
                 } else {
-                    this.debug.log("Battery API does not supported");
+                    A5().debug.log("Battery API does not supported");
                 }
             },
             "telephony": function () {
@@ -310,7 +328,7 @@
                         body: msg
                     });
                 } else {
-                    this.debug.log("Notification API does not supported");
+                    A5().debug.log("Notification API does not supported");
                 }
                 return this;
             }
@@ -323,12 +341,12 @@
                 timeout: 27000
             },
             "start": function (callback) {
-                this.debug.log("Start Geo position tracking.");
+                A5().debug.log("Start Geo position tracking.");
                 this.Geo.ID = navigator.geolocation.watchPosition(function (position) {
-                    this.debug.log("Geo position updated.");
+                    A5().debug.log("Geo position updated.");
                     callback(position.coords.latitude, position.coords.longitude);
                 }, function () {
-                    this.debug.log("Error, no position available.");
+                    A5().debug.log("Error, no position available.");
                 }, this.Geo.options);
             },
             "stop": function () {
@@ -386,7 +404,7 @@
 
         },
         "ajax": function(url,params,callback){
-            this.debug.log("Add HTML element to '" + selector + "'");    
+            A5().debug.log("Add HTML element to '" + selector + "'");    
             var xhr; 
             try {  xhr = new ActiveXObject('Msxml2.XMLHTTP');   }
             catch (e) {
@@ -485,7 +503,7 @@
             }
         }
     }
-    
+    //A5.fn.init.prototype = A5.fn;
     if(!window.A5) {
         window.A5 = A5;
     }
