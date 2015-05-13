@@ -10,7 +10,8 @@
         }
         return this;        
     };
-    var A5 = App5.prototype = {
+    var A5 = new App5(params);
+    A5.prototype = {
         "ready": function (callback) {
             this.debug.log("** App5 initialisation v "+this.version+"**");
             this.event.listen(document, "DOMContentLoaded", function () {
