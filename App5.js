@@ -25,13 +25,13 @@
         "debug" : {
             "log": function (msg) {
                 var e = new Date();
-                console.log(e.toGMTString() + " : " + msg);
+                //console.log(e.toGMTString() + " : " + msg);
                 return this;
             },
             "display": function () {
                 var i;
-                for (i in A5.debug.message) {
-                    console.table(A5.debug.message[i]);
+                for (i in A5().debug.message) {
+                    console.table(A5().debug.message[i]);
                 }
                 return this;
             }
