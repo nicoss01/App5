@@ -25,7 +25,7 @@
         "debug" : {
             "log": function (msg) {
                 var e = new Date();
-                //console.log(e.toGMTString() + " : " + msg);
+                console.log(e.toGMTString() + " : " + msg);
                 return this;
             },
             "display": function () {
