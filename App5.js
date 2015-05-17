@@ -1,31 +1,31 @@
 (function () {
     "use strict";
-    var selector = function (params) {
-        //console.log(typeof params);
-        if(typeof params!="string"){
-            //A5().debug.log("Document selected");
-            this[0] = params;
-        }else{
-            if(typeof params!="undefined"){
-                var selector = document.querySelectorAll(params);
-                this.length = selector.length;
-                for (var a=0; a < this.length; a++) {
-                    this[a] = selector[a];
-                }
-            }
-        }
-        return this;
-    }
     var A5 = function (params) {
-        return new selector(params);
+        return new A5.fn.init(params);
     };
     A5.fn = A5.prototype = {
         "version":"1.0.1",
         "message":[],
+        "init"  : function (params) {
+            //console.log(typeof params);
+            if(typeof params!="string"){
+                //A5().debug.log("Document selected");
+                this[0] = params;
+            }else{
+                if(typeof params!="undefined"){
+                    var selector = document.querySelectorAll(params);
+                    this.length = selector.length;
+                    for (var a=0; a < this.length; a++) {
+                        this[a] = selector[a];
+                    }
+                }
+            }
+            return this;        
+        },
         "debug" : {
             "log": function (msg) {
                 var e = new Date();
-                console.log(e.toGMTString() + " : " + msg);
+                //console.log(e.toGMTString() + " : " + msg);
                 return this;
             },
             "display": function () {
