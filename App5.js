@@ -9,7 +9,7 @@
         "init"  : function (params) {
             //console.log(typeof params);
             if(typeof params!="string"){
-                A5().debug.log("Document selected");
+                //A5().debug.log("Document selected");
                 this[0] = params;
             }else{
                 if(typeof params!="undefined"){
@@ -30,8 +30,8 @@
             },
             "display": function () {
                 var i;
-                for (i in A5().debug.message) {
-                    console.table(A5().debug.message[i]);
+                for (i in A5.debug.message) {
+                    console.table(A5.debug.message[i]);
                 }
                 return this;
             }
