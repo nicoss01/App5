@@ -5,10 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>App5 - Test</title>
-    <script src="App5.js"></script>
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="App5.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 
@@ -33,7 +34,7 @@
                     <label for="geo">Geolocation : </label>
                     <input type="text" name="geo" id="geo" class="form-control" />
                 </div>
-                <input type="submit" class="btn btn-default" value="Save User to DB" />
+                <input type="submit" id="save" class="btn btn-default" value="Save User to DB" />
             </form>
         </div>
         <div class="col-xs-8">
@@ -44,29 +45,31 @@
     <script>
     A5().ready(function(){
         A5().debug.log("chargement ok");
-        A5().db.open("app5-test","Test database","1.0",5);
-        A5().db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);');
-        A5().geo.position(function(lng,lat){
+        var cnx = A5().db.open("app5-test","Test database","1.0",5);
+        A5().db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);',cnx);
+        A5().Geo.position(function(lng,lat){
             var geo     = A5("#geo");
-            geo.value = lng+" / "+lat;
-        })
+            console.log(geo);
+            geo.html.value = lng+" / "+lat;
+        });
         A5("#fs").event.listen("click",function(e){
             e.preventDefault();
             A5().debug.log("Fullsreen ok");
-           A5().view.fullscreen.open(); 
+            A5().view.fullscreen.open(); 
         });
         A5("#print").event.listen("click",function(){
            A5().view.print(A5("#users")); 
         });
-        A5("input[type=submit]").event.listen("click",function(e){
-            var fn      = A5("#firstname").html.value();
-            var ln      = A5("#lastname").value();
-            var email   = A5("#lastname").value();            
-            var geo     = A5("#lastname").value();
-            A5().db.query('INSERT INTO users(lastname,firstname,email,geo) VALUES ("'+ln+'","'+fn+'","'+email+'","'+geo+'")');
+        A5("#save").event.listen("click",function(e){
             e.preventDefault();
+            var fn      = A5("#firstname").html.value();
+            var ln      = A5("#lastname").html.value();
+            var email   = A5("#email").html.value();            
+            var geo     = A5("#geo").html.value();
+            A5().db.query('INSERT INTO users(lastname,firstname,email,geo) VALUES ("'+ln+'","'+fn+'","'+email+'","'+geo+'")',cnx);
             return false;
         });
+        A5().db.autorefresh(cnx);
     })
     </script>
 </body>
