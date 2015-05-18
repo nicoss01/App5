@@ -49,7 +49,7 @@
         A5().db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);',cnx);
         A5().Geo.position(function(lng,lat){
             var geo     = A5("#geo");
-            console.log(geo);
+            console.log("geo ok",lat,lng);
             geo.html.value = lng+" / "+lat;
         });
         A5("#fs").event.listen("click",function(e){
