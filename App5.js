@@ -1,24 +1,3 @@
-<<<<<<< HEAD
-(function () {
-    "use strict";
-    var A5 = function (params) {
-        return A5.fn.init(params);
-    };
-    A5.fn = A5.prototype = {
-        "version":"1.0.1",
-        "message":[],
-        "init"  : function (params) {
-            if(typeof params!="string"){
-                this.debug.log("Document selected");
-                this[0] = params;
-            }else{
-                if(typeof params!="undefined"){
-                    var selector = document.querySelectorAll(params);
-                    this.length = selector.length;
-                    for (var a=0; a < this.length; a++) {
-                        this[a] = selector[a];
-                    }
-=======
 var A5 = function (params) {
     this.version = "1.0.1";
     var self = this;
@@ -60,7 +39,6 @@ var A5 = function (params) {
                     self[len].addEventListener(ev, cb, false);
                 } else if (self[len].attachEvent) {
                    self[len].attachEvent('on' + ev, cb);
->>>>>>> origin/gh-pages
                 }
             }
             return self;
@@ -131,13 +109,6 @@ var A5 = function (params) {
         "onError": function (tx, e) {
             self.debug.log("Error query - '" + e.message + "'");
         },
-<<<<<<< HEAD
-        "ready": function (callback) {
-            A5().debug.log("** App5 initialisation v "+this.version+" **");
-            A5(document).event.listen("DOMContentLoaded", function () {
-                A5.debug.log("* Page loaded *");
-                callback();
-=======
         "onSuccess": function (tx, r) {
             self.debug.log("Success query");
         },
@@ -146,7 +117,6 @@ var A5 = function (params) {
             console.log(self);
             cnx.transaction(function (tx) {
                 tx.executeSql(sql, [], success, self.db.onError);
->>>>>>> origin/gh-pages
             });
             return self;
         },
