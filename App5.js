@@ -76,20 +76,20 @@ var A5 = function (params) {
             }
             return this;
         },
-        "value" : function(selector,value){
+        "value" : function(value){
             var len = self.size;
             while (len--) {
                 if(typeof value=="undefined"){
                     if(self[len].nodeName=="select"){
-                        return self[len].options[selector.selectedIndex].value;
+                        return self[len].options[self[len].selectedIndex].value;
                     }else{
                         return self[len].value;
                     }
                 }else{
                     if(self[len].nodeName=="select"){
-                        return true;
+                        
                     }else{
-                        return self.value = value;
+                        self[len].value = value;
                     }
                 }
             }
