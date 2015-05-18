@@ -49,6 +49,7 @@
         A5().db.query('CREATE TABLE users (ID INTEGER NOT NULL PRIMARY KEY,firstname TEXT,lastname TEXT,email TEXT,geo TEXT);',cnx);
         A5().Geo.position(function(lng,lat){
             A5("#geo").html.value(lng+" / "+lat);
+            A5().debug.log(lat+" / "+lng);
         });
         A5("#fs").event.listen("click",function(e){
             e.preventDefault();
