@@ -69,12 +69,19 @@ var A5 = function (params) {
             }
             return self;
         },
+        "content":function(value){
+            var len = self.size;
+            while (len--) {
+                self[len].innerHTML = value;
+            }
+            return self;            
+        },
         "css": function (prop, value) {
             var len = self.size;
             while (len--) {
                 self[len].style[prop] = value;
             }
-            return this;
+            return self;
         },
         "value" : function(value){
             var len = self.size;
