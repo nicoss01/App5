@@ -94,6 +94,17 @@ var A5 = function (params) {
                 }
             }
             return self;
+        },
+        "attr":function(name,value){
+            var len = self.size;
+            while (len--) {
+                if(typeof value=="undefined"){
+                     return self[len].getAttribute(name);
+                }else{
+                    self[len].setAttribute(name,value);
+                }
+            }
+            return self;
         }
     };
     this.db = {
